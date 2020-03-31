@@ -19,5 +19,5 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(9090, () => {
-    console.log('PRICE Service listening on port', 9090);
+    console.log('Server listening on port', 9090);
 });
