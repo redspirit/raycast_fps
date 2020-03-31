@@ -29,3 +29,8 @@ let update = (ctx, delta) => {
 engine.addUpdateCallback(update);
 
 engine.start();
+
+
+let res = Intersection.intersectLinePolygon({x:2,y:6}, {x:7,y:3}, [{x:2,y:3}, {x:2,y:2}, {x:6,y:2}, {x:6,y:3}]);
+
+console.log(res);
