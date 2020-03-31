@@ -13,7 +13,7 @@ let Engine = function () {
 
     let update = (delta) => {
         callbacksList.forEach(fn => {
-           fn(ctx, delta);
+           fn(ctx, +delta);
         });
     };
 

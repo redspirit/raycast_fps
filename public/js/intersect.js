@@ -91,3 +91,24 @@ Intersection.intersectLinePolygon = function(a1, a2, points) {
 
     return result;
 };
+
+Intersection.intersectLinePolygons = function(a1, a2, polygons) {
+
+    let result = {
+        intersect: false,
+        target: a2
+    };
+
+    for ( let i = 0; i < polygons.length; i++ ) {
+        let poly = polygons[i];
+        let res = Intersection.intersectLinePolygon(a1, a2, poly);
+        if(res.intersect) {
+            result.intersect = true;
+            result.target = res.target;
+            result.distance = res.distance;
+            break;
+        }
+    }
+
+    return result;
+};

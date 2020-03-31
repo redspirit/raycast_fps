@@ -26,8 +26,22 @@ let update = (ctx, delta) => {
 
 };
 
-let drawPreview = (ctx) => {
 
+let rayangle = 0;
+
+let drawPreview = (ctx, delta) => {
+
+    let cameraPoint = {x: 8 * 15, y: 5 * 15};
+    let rayLength = 150;
+    rayangle = rayangle + 0.008;
+
+    // ctx.font = "14px Arial";
+    // ctx.fillText(rayangle.toString(), 10, 10);
+
+    let endRayPoint = {
+        x: cameraPoint.x + Math.cos(rayangle) * rayLength,
+        y: cameraPoint.y + Math.sin(rayangle) * rayLength,
+    };
 
 
     ctx.strokeStyle = "rgb(0,0,0)";
@@ -40,12 +54,22 @@ let drawPreview = (ctx) => {
         }
         ctx.lineTo(poly[0].x, poly[0].y);
         ctx.stroke();
+
     });
+
+
+    let intersectResult = Intersection.intersectLinePolygons(cameraPoint, endRayPoint, MapData);
+
+    ctx.beginPath();
+    ctx.strokeStyle = "rgb(255,0,0)";
+    ctx.moveTo(cameraPoint.x, cameraPoint.y);
+    ctx.lineTo(intersectResult.target.x, intersectResult.target.y);
+    ctx.stroke();
 
 };
 
 
-engine.addUpdateCallback(update);
+// engine.addUpdateCallback(update);
 engine.addUpdateCallback(drawPreview);
 
 engine.start();
