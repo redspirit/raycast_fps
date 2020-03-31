@@ -66,7 +66,7 @@ Intersection.intersectLinePolygon = function(a1, a2, points) {
     let result = new Intersection("No Intersection");
     let length = points.length;
     result.intersect = false;
-    result.distance = Infinity;
+    result.distance = null;
 
     for ( let i = 0; i < length; i++ ) {
         let b1 = points[i];

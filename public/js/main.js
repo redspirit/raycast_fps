@@ -28,21 +28,51 @@ let update = (ctx, delta) => {
 
 
 let dirAngle = 0;       // in deg
-let viewingAngle = 90;  // in deg
-let rayLength = 150;
+let viewingAngle = 60;  // in deg
+let rayLength = 300;
 let cameraPoint = {x: 8 * 15, y: 5 * 15};
-let raysCount = 40;
+let raysCount = 120;
 
 let rayDelta = viewingAngle / raysCount; // in deg
+let barWidth = 800 / raysCount;
+
+
+let direction = 0;
+
+hotkeys('W', {keyup: true, keydown: true}, function() {
+    if (event.type === 'keydown') {
+        direction = 1;
+    }
+    if (event.type === 'keyup') {
+        direction = 0;
+    }
+});
+
+hotkeys('S', {keyup: true, keydown: true}, function() {
+    if (event.type === 'keydown') {
+        direction = -1;
+    }
+    if (event.type === 'keyup') {
+        direction = 0;
+    }
+});
+
 
 let drawPreview = (ctx, delta) => {
 
-    dirAngle += 0.2;
+    // dirAngle += 0.05;
+
+    // console.log(direction);
+
+    let speed = 1;
+    cameraPoint.x += direction * Math.cos(engine.toRad(dirAngle)) * speed;
+    cameraPoint.y += direction * Math.sin(engine.toRad(dirAngle)) * speed;
+
 
     let leftAngle = dirAngle - (viewingAngle / 2);
     let rightAngle = dirAngle + (viewingAngle / 2);
 
-    // console.log(leftAngle, rightAngle);
+    let barX = 0;
 
     for ( let a = leftAngle; a <= rightAngle; a += rayDelta) {
 
@@ -54,11 +84,21 @@ let drawPreview = (ctx, delta) => {
 
         let intersectResult = Intersection.intersectLinePolygons(cameraPoint, endRayPoint, MapData);
 
-        ctx.beginPath();
-        ctx.strokeStyle = "rgb(255,0,0)";
-        ctx.moveTo(cameraPoint.x, cameraPoint.y);
-        ctx.lineTo(intersectResult.target.x, intersectResult.target.y);
-        ctx.stroke();
+        if(intersectResult.distance !== null) {
+            let barHeight = 1 / intersectResult.distance * 1000 * 16;
+            let color = (120 - intersectResult.distance).toString();
+            ctx.fillStyle = 'rgb('+color+','+color+','+color+')';
+            // ctx.strokeStyle = ctx.fillStyle;
+            ctx.fillRect(barX, 300 - (barHeight / 2), barWidth, barHeight);
+        }
+        barX += barWidth;
+
+
+        // ctx.beginPath();
+        // ctx.strokeStyle = "rgb(255,0,0)";
+        // ctx.moveTo(cameraPoint.x, cameraPoint.y);
+        // ctx.lineTo(intersectResult.target.x, intersectResult.target.y);
+        // ctx.stroke();
 
     }
 
