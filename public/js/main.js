@@ -27,21 +27,44 @@ let update = (ctx, delta) => {
 };
 
 
-let rayangle = 0;
+let dirAngle = 0;       // in deg
+let viewingAngle = 90;  // in deg
+let rayLength = 150;
+let cameraPoint = {x: 8 * 15, y: 5 * 15};
+let raysCount = 40;
+
+let rayDelta = viewingAngle / raysCount; // in deg
 
 let drawPreview = (ctx, delta) => {
 
-    let cameraPoint = {x: 8 * 15, y: 5 * 15};
-    let rayLength = 150;
-    rayangle = rayangle + 0.008;
+    dirAngle += 0.2;
 
-    // ctx.font = "14px Arial";
-    // ctx.fillText(rayangle.toString(), 10, 10);
+    let leftAngle = dirAngle - (viewingAngle / 2);
+    let rightAngle = dirAngle + (viewingAngle / 2);
 
-    let endRayPoint = {
-        x: cameraPoint.x + Math.cos(rayangle) * rayLength,
-        y: cameraPoint.y + Math.sin(rayangle) * rayLength,
-    };
+    // console.log(leftAngle, rightAngle);
+
+    for ( let a = leftAngle; a <= rightAngle; a += rayDelta) {
+
+        let radA = engine.toRad(a);
+        let endRayPoint = {
+            x: cameraPoint.x + Math.cos(radA) * rayLength,
+            y: cameraPoint.y + Math.sin(radA) * rayLength,
+        };
+
+        let intersectResult = Intersection.intersectLinePolygons(cameraPoint, endRayPoint, MapData);
+
+        ctx.beginPath();
+        ctx.strokeStyle = "rgb(255,0,0)";
+        ctx.moveTo(cameraPoint.x, cameraPoint.y);
+        ctx.lineTo(intersectResult.target.x, intersectResult.target.y);
+        ctx.stroke();
+
+    }
+
+};
+
+let drawMap = (ctx, delta) => {
 
 
     ctx.strokeStyle = "rgb(0,0,0)";
@@ -57,20 +80,11 @@ let drawPreview = (ctx, delta) => {
 
     });
 
-
-    let intersectResult = Intersection.intersectLinePolygons(cameraPoint, endRayPoint, MapData);
-
-    ctx.beginPath();
-    ctx.strokeStyle = "rgb(255,0,0)";
-    ctx.moveTo(cameraPoint.x, cameraPoint.y);
-    ctx.lineTo(intersectResult.target.x, intersectResult.target.y);
-    ctx.stroke();
-
 };
-
 
 // engine.addUpdateCallback(update);
 engine.addUpdateCallback(drawPreview);
+engine.addUpdateCallback(drawMap);
 
 engine.start();
 

@@ -13,7 +13,7 @@ let Engine = function () {
 
     let update = (delta) => {
         callbacksList.forEach(fn => {
-           fn(ctx, +delta);
+           fn(ctx, delta);
         });
     };
 
@@ -28,6 +28,10 @@ let Engine = function () {
 
     this.start = () => {
         tick();
+    }
+
+    this.toRad = x => {
+        return x * 0.01745329;
     }
 
 };
